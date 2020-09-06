@@ -55,6 +55,8 @@ function! s:GenericEntry(path, filename, title) abort
     " if a file does not exists, it's created
     setlocal autochdir
     nnoremap <buffer>  gf :e <cfile><cr>
+    " tab magic for path autocompletion
+    nnoremap <Tab> <C-X><C-F>
 
     if a:title != "" && !filereadable(filename)
         call setline(1, '# ' . a:title)
@@ -105,6 +107,7 @@ function! s:TodoEntry(path, ...) abort
     call s:GenericEntry(a:path, filename, title)
 endfunction
 
-
 :command! -nargs=? Journal call s:JournalEntry(g:cuaderno_journal_path, <f-args>)
 :command! -nargs=? Todo call s:TodoEntry(g:cuaderno_todo_path, <f-args>)
+
+" :command! -nargs=? Note call s:NoteEntry(g:cuaderno_note_path, <f-args>)
