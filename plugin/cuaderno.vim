@@ -19,11 +19,6 @@ if !exists('g:todo_path')
 endif
 
 
-" if a file does not exists, it's created
-setlocal autochdir
-nnoremap <buffer>  gf :e <cfile><cr>
-
-
 function! s:ShowTree() abort
     if exists(":NERDTree")
         execute 'NERDTree'
@@ -50,6 +45,10 @@ function! s:GenericEntry(path, filename, title) abort
     let filename = file_path . '/' . tolower(a:filename)
     call s:ShowTree()
     execute "e " . filename
+
+    " if a file does not exists, it's created
+    setlocal autochdir
+    nnoremap <buffer>  gf :e <cfile><cr>
 
     if a:title != "" && !filereadable(filename)
         call setline(1, '# ' . a:title)
