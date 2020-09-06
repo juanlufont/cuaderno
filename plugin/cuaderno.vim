@@ -18,9 +18,11 @@ if !exists('g:todo_path')
     let g:todo_path = '~/.notes/notes'
 endif
 
+
 " if a file does not exists, it's created
-"set autochdir
-"nmap gf :e <cfile><cr>
+setlocal autochdir
+nnoremap <buffer>  gf :e <cfile><cr>
+
 
 function! s:ShowTree() abort
     if exists(":NERDTree")
@@ -69,7 +71,8 @@ function! s:JournalEntry(path, ...) abort
         let entry_date = trim(system('date -I --date="yesterday"'))
     elseif date == "tomorrow"
         let entry_date = trim(system('date -I --date="tomorrow"'))
-    elseif date =~ '^\d\{4}-[0-1]\d-[0-3]\d$'
+    elseif trim(system('date -I --date="' . date . '"')) == date
+        " date =~ '^\d\{4}-[0-1]\d-[0-3]\d$'
         let entry_date = date
     else
         echom "Journal: " . date . " is a wrong date!"
@@ -83,7 +86,9 @@ endfunction
 
 function! s:TodoEntry(path, ...) abort
     let date = get(a:, 1, strftime('%Y-%m'))
-    if date =~ '^\d\{4}-[0-1]\d$'
+    let month_aux = date[-2:]
+    if trim(system('date -I --date="' . date .'-01"')) == date . '-01'
+        " if date =~ '^\d\{4}-[0-1]\d$' && str2nr(month_aux) <= 12
         let entry_date = date
         let year = date[0:3]
         let month = date[-2:]
