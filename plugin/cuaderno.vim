@@ -56,7 +56,7 @@ function! s:GenericEntry(path, filename, title) abort
     setlocal autochdir
     nnoremap <buffer>  gf :e <cfile><cr>
     " tab magic for path autocompletion
-    nnoremap <Tab> <C-X><C-F>
+    nnoremap <buffer> <Tab> <C-X><C-F>
 
     if a:title != "" && !filereadable(filename)
         call setline(1, '# ' . a:title)
