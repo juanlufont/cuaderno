@@ -6,27 +6,33 @@ let g:loaded_cuaderno = 1
 let s:month_names = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
 
 " checking configuration variables
-if !exists('g:journal_path')
-    let g:journal_path = '~/.notes'
+if !exists('g:cuaderno_journal_path')
+    let g:cuadernojournal_path = '~/.notes'
 endif
 
-if !exists('g:note_path')
-    let g:note_path = '~/.notes/articles'
+if !exists('g:cuaderno_note_path')
+    let g:cuaderno_note_path = '~/.notes/articles'
 endif
 
-if !exists('g:todo_path')
-    let g:todo_path = '~/.notes/notes'
+if !exists('g:cuaderno_todo_path')
+    let g:cuaderno_todo_path = '~/.notes/notes'
+endif
+
+if !exists('g:cuaderno_show_folder')
+    let g:cuaderno_show_folder = 1
 endif
 
 
 function! s:ShowTree() abort
-    if exists(":NERDTree")
-        execute 'NERDTree'
-    else
-        execute 'Vexplore'
+    if g:cuaderno_show_folder != 0
+        if exists(":NERDTree")
+            execute 'NERDTree'
+        else
+            execute 'Vexplore'
+        endif
+        " back to previous window
+        execute 'wincmd p'
     endif
-    " back to previous window
-    execute 'wincmd p'
 endfunction
 
 
@@ -44,8 +50,8 @@ function! s:GenericEntry(path, filename, title) abort
     let file_path = s:GotoFolder(a:path)
     let filename = file_path . '/' . tolower(a:filename)
     call s:ShowTree()
-    execute "e " . filename
 
+    execute "e " . filename
     " if a file does not exists, it's created
     setlocal autochdir
     nnoremap <buffer>  gf :e <cfile><cr>
@@ -87,7 +93,6 @@ function! s:TodoEntry(path, ...) abort
     let date = get(a:, 1, strftime('%Y-%m'))
     let month_aux = date[-2:]
     if trim(system('date -I --date="' . date .'-01"')) == date . '-01'
-        " if date =~ '^\d\{4}-[0-1]\d$' && str2nr(month_aux) <= 12
         let entry_date = date
         let year = date[0:3]
         let month = date[-2:]
@@ -101,5 +106,5 @@ function! s:TodoEntry(path, ...) abort
 endfunction
 
 
-:command! -nargs=? Journal call s:JournalEntry(g:journal_path, <f-args>)
-:command! -nargs=? Todo call s:TodoEntry(g:todo_path, <f-args>)
+:command! -nargs=? Journal call s:JournalEntry(g:cuaderno_journal_path, <f-args>)
+:command! -nargs=? Todo call s:TodoEntry(g:cuaderno_todo_path, <f-args>)
