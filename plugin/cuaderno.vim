@@ -5,9 +5,18 @@ let g:loaded_cuaderno = 1
 
 let s:month_names = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
 
-let g:journal_path = '~/.notes'
-let g:note_path = '~/.notes/articles'
-let g:task_path = '~/.notes/notes'
+" checking configuration variables
+if !exists('g:journal_path')
+    let g:journal_path = '~/.notes'
+endif
+
+if !exists('g:note_path')
+    let g:note_path = '~/.notes/articles'
+endif
+
+if !exists('g:todo_path')
+    let g:todo_path = '~/.notes/notes'
+endif
 
 " if a file does not exists, it's created
 "set autochdir
@@ -89,4 +98,4 @@ endfunction
 
 
 :command! -nargs=? Journal call s:JournalEntry(g:journal_path, <f-args>)
-:command! -nargs=? Todo call s:TodoEntry(g:task_path, <f-args>)
+:command! -nargs=? Todo call s:TodoEntry(g:todo_path, <f-args>)
