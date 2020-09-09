@@ -107,7 +107,15 @@ function! s:TodoEntry(path, ...) abort
     call s:GenericEntry(a:path, filename, title)
 endfunction
 
-:command! -nargs=? Journal call s:JournalEntry(g:cuaderno_journal_path, <f-args>)
-:command! -nargs=? Todo call s:TodoEntry(g:cuaderno_todo_path, <f-args>)
+
+command! -nargs=? Journal call s:JournalEntry(g:cuaderno_journal_path, <f-args>)
+command! -nargs=? Todo call s:TodoEntry(g:cuaderno_todo_path, <f-args>)
+
+
+nmap <Plug>CuadernoLinkToday "=strftime('[](./%Y-%m-%d.md)')<C-M>p
+
+if !hasmapto('<Plug>CuadernoLinkToday')
+    nmap tt <Plug>CuadernoLinkToday
+endif
 
 " :command! -nargs=? Note call s:NoteEntry(g:cuaderno_note_path, <f-args>)
