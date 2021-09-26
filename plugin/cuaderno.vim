@@ -112,7 +112,7 @@ function! s:TodoEntry(path) abort
         \ year, month, monday,
         \ year, month, sunday
         \)
-    call s:GenericEntry(a:path, filename, [title, text])
+    call s:GenericEntry(a:path, filename, [title, '', text])
 endfunction
 
 
