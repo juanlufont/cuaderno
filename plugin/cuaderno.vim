@@ -1,17 +1,16 @@
 if exists('g:loaded_cuaderno')
   finish
 endif
+
 let g:loaded_cuaderno = 1
+
 
 let s:month_names = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
 
-" checking configuration variables
+
+" default values for configuration variables
 if !exists('g:cuaderno_journal_path')
     let g:cuadernojournal_path = '~/.notes'
-endif
-
-if !exists('g:cuaderno_note_path')
-    let g:cuaderno_note_path = '~/.notes/articles'
 endif
 
 if !exists('g:cuaderno_todo_path')
@@ -23,7 +22,9 @@ if !exists('g:cuaderno_show_folder')
 endif
 
 
+" shows folder browser
 function! s:ShowTree() abort
+    " TODO file browser could be a parameter
     if g:cuaderno_show_folder != 0
         if exists(":NERDTree")
             execute 'NERDTree'
@@ -38,6 +39,7 @@ endfunction
 
 function! s:GotoFolder(path) abort
     let path = expand(a:path)
+    " if folder does not exist, it's created
     if !isdirectory(path)
         call mkdir(path, "p")
     endif
@@ -49,14 +51,13 @@ endfunction
 function! s:GenericEntry(path, filename, title) abort
     let file_path = s:GotoFolder(a:path)
     let filename = file_path . '/' . tolower(a:filename)
+
     call s:ShowTree()
 
     execute "e " . filename
     " if a file does not exists, it's created
     setlocal autochdir
     nnoremap <buffer>  gf :e <cfile><cr>
-    " tab magic for path autocompletion
-    " nnoremap <buffer> <Tab> <C-X><C-F>
 
     if a:title != "" && !filereadable(filename)
         call setline(1, '# ' . a:title)
@@ -82,7 +83,7 @@ function! s:JournalEntry(path, ...) abort
         " date =~ '^\d\{4}-[0-1]\d-[0-3]\d$'
         let entry_date = date
     else
-        echom "Journal: " . date . " is a wrong date!"
+        echom "Journal: " . date . ", wrong date!"
         return
     endif
 
@@ -91,31 +92,31 @@ function! s:JournalEntry(path, ...) abort
 endfunction
 
 
-function! s:TodoEntry(path, ...) abort
-    let date = get(a:, 1, strftime('%Y-%m'))
-    let month_aux = date[-2:]
-    if trim(system('date -I --date="' . date .'-01"')) == date . '-01'
-        let entry_date = date
-        let year = date[0:3]
-        let month = date[-2:]
-        let title = "TODO, " . year . ' ' . s:month_names[str2nr(month) - 1]
-    else
-        echom "Todo: " . date . " is not valid yyyy-mm date!"
-        return
-    endif
-    let filename = 'todo.' . entry_date . '.md'
+function! s:TodoEntry(path) abort
+    let date = strftime('%Y-%m.week-%V')
+    let year = strftime('%Y')
+    let month = strftime('%m')
+    let month_name = strftime('%B')
+    let week = strftime('%V')
+    let monday = system('date -dlast-monday +%d')
+    let sunday = system('date -d"last-monday+6days" +%d')
+
+    let filename = 'todo.' . date . '.md'
+    let title = printf(
+        \ "# %s %s week %s, from %s-%s-%s to %s-%s-%s ", 
+        \ year, month_name, week, 
+        \ year, month, monday, 
+        \ year, month, sunday
+        \)
     call s:GenericEntry(a:path, filename, title)
 endfunction
 
 
 command! -nargs=? Journal call s:JournalEntry(g:cuaderno_journal_path, <f-args>)
-command! -nargs=? Todo call s:TodoEntry(g:cuaderno_todo_path, <f-args>)
+command! Todo call s:TodoEntry(g:cuaderno_todo_path)
 
+" nmap <Plug>CuadernoLinkToday "=strftime('[](./%Y-%m-%d.md)')<C-M>p
 
-nmap <Plug>CuadernoLinkToday "=strftime('[](./%Y-%m-%d.md)')<C-M>p
-
-if !hasmapto('<Plug>CuadernoLinkToday')
-    nmap tt <Plug>CuadernoLinkToday
-endif
-
-" :command! -nargs=? Note call s:NoteEntry(g:cuaderno_note_path, <f-args>)
+" if !hasmapto('<Plug>CuadernoLinkToday')
+"     nmap tt <Plug>CuadernoLinkToday
+" endif
