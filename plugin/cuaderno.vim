@@ -59,9 +59,9 @@ function! s:GenericEntry(path, filename, lines) abort
     setlocal autochdir
     nnoremap <buffer>  gf :e <cfile><cr>
 
-    if len(lines) > 0 && !filereadable(filename)
+    if len(a:lines) > 0 && !filereadable(filename)
         let nline = 1
-        for l in lines
+        for l in a:lines
            setline(nline, l)
            let nline = nline + 1
         endfor
