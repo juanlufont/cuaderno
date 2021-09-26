@@ -63,7 +63,7 @@ function! s:GenericEntry(path, filename, lines) abort
         let nline = 1
         for l in a:lines
            call setline(nline, l)
-           let nline = nline + 1
+           let nline += 1
         endfor
         call setline(2, '')
         call setline(3, '')
