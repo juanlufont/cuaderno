@@ -48,7 +48,7 @@ function! s:GotoFolder(path) abort
 endfunction
 
 
-function! s:GenericEntry(path, filename, title) abort
+function! s:GenericEntry(path, filename, lines) abort
     let file_path = s:GotoFolder(a:path)
     let filename = file_path . '/' . tolower(a:filename)
 
@@ -59,8 +59,12 @@ function! s:GenericEntry(path, filename, title) abort
     setlocal autochdir
     nnoremap <buffer>  gf :e <cfile><cr>
 
-    if a:title != "" && !filereadable(filename)
-        call setline(1, '# ' . a:title)
+    if len(lines) > 0 && !filereadable(filename)
+        let nline = 1
+        for l in lines
+           setline(nline, l)
+           let nline = nline + 1
+        endfor
         call setline(2, '')
         call setline(3, '')
     endif
@@ -88,7 +92,7 @@ function! s:JournalEntry(path, ...) abort
     endif
 
     let filename = entry_date . '.md'
-    call s:GenericEntry(a:path, filename, entry_date)
+    call s:GenericEntry(a:path, filename, [entry_date])
 endfunction
 
 
@@ -102,13 +106,13 @@ function! s:TodoEntry(path) abort
     let sunday = system('date -d"last-monday+6days" +%d')
 
     let filename = 'todo.' . date . '.md'
-    let title = printf(
-        \ "%s %s week %s\n\r\n\rFrom %s-%s-%2d to %s-%s-%2d",
-        \ year, month_name, week,
+    let title = printf("# %s %s week %s", year, month_name, week)
+    let text = printf(
+        \ "From %s-%s-%2d to %s-%s-%2d"
         \ year, month, monday,
         \ year, month, sunday
         \)
-    call s:GenericEntry(a:path, filename, title)
+    call s:GenericEntry(a:path, filename, [title, text])
 endfunction
 
 
