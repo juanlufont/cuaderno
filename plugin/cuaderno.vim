@@ -108,7 +108,7 @@ function! s:TodoEntry(path) abort
     let filename = 'todo.' . date . '.md'
     let title = printf("# %s %s week %s", year, month_name, week)
     let text = printf(
-        \ "From %s-%s-%2d to %s-%s-%2d"
+        \ "From %s-%s-%2d to %s-%s-%2d",
         \ year, month, monday,
         \ year, month, sunday
         \)
