@@ -62,7 +62,7 @@ function! s:GenericEntry(path, filename, lines) abort
     if len(a:lines) > 0 && !filereadable(filename)
         let nline = 1
         for l in a:lines
-           setline(nline, l)
+           call setline(nline, l)
            let nline = nline + 1
         endfor
         call setline(2, '')
