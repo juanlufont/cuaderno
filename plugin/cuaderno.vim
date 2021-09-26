@@ -93,7 +93,7 @@ endfunction
 
 
 function! s:TodoEntry(path) abort
-    let date = strftime('%Y-%m.week-%V')
+    let date = strftime('%Y-%m-week-%V')
     let year = strftime('%Y')
     let month = strftime('%m')
     let month_name = strftime('%B')
@@ -103,9 +103,9 @@ function! s:TodoEntry(path) abort
 
     let filename = 'todo.' . date . '.md'
     let title = printf(
-        \ "# %s %s week %s, from %s-%s-%s to %s-%s-%s ", 
-        \ year, month_name, week, 
-        \ year, month, monday, 
+        \ "%s %s week %s\n\nFrom %s-%s-%2d to %s-%s-%2d",
+        \ year, month_name, week,
+        \ year, month, monday,
         \ year, month, sunday
         \)
     call s:GenericEntry(a:path, filename, title)
