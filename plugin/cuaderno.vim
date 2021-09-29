@@ -92,7 +92,7 @@ function! s:JournalEntry(path, ...) abort
     endif
 
     let filename = entry_date . '.md'
-    call s:GenericEntry(a:path, filename, [entry_date])
+    call s:GenericEntry(a:path, filename, ['#' . entry_date])
 endfunction
 
 
